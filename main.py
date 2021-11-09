@@ -1,6 +1,5 @@
 import numpy as np
 import yfinance as yf
-import knn
 
 import talib as ta
 from talib import MA_Type
@@ -12,7 +11,7 @@ from sklearn import svm
 from sklearn.dummy import DummyClassifier
 
 def fadd(x):
-    dollar_gain = x["Close"] - x["Open"]
+    dollar_gain = x["Close"] - x["Open"] 
     return dollar_gain
 
 def signal(x):
