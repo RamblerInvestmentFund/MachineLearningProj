@@ -15,4 +15,4 @@ __remember to pull from repo before making changes__
 - pandas
 - tensorflow
 
-![accuracy](graphs/accuracy.png)
+![accuracy](graphs/results-rnn.png)

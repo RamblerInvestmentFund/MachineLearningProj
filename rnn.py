@@ -72,6 +72,11 @@ def _clean(path: str):
     # use days since 52 week high?
 
     df = df.drop(columns=["Date", "Close", "Returns"])
+
+    ## droped most of excess data
+    col = [f'Returns-{i}' for i in range(15,52)]
+    df = df.drop(columns=[*col])
+
     df.dropna(inplace=True)
 
     X = df
@@ -95,8 +100,8 @@ def preprocess(path: str):
 
     X, y, SIZE = _clean(path)
 
-    X = np.array(X)  # shape: (10264,54)
-    y = np.array(y.values)  # (10264,)
+    X = np.array(X)
+    y = np.array(y.values)
 
     'convert to tensor?'
 
@@ -130,13 +135,47 @@ def graph(hist):
 
     print(hist.keys())
 
-    plt.plot(hist['accuracy'], label='train')
-    plt.plot(hist['val_accuracy'], label='validation')
-    plt.ylabel('accuracy')
-    plt.xlabel('epoch')
-    plt.legend(loc='lower right')
+    fig = plt.figure(figsize=(12,8))
+    fig.suptitle('RNN analysis on stock values', fontsize=16)
 
-    plt.show()
+
+    ## accuracy
+    ax = fig.add_subplot(2,2,1)
+    ax.plot(hist['accuracy'], label='Train acc.')
+    ax.plot(hist['val_accuracy'], label='Validation acc.')
+    ax.set_ylabel('Accuracy')
+    ax.set_xlabel('Epoch')
+    ax.legend(loc='lower right')
+    ax.set_title('Accuracy of RNN')
+
+
+    ## loss
+    ax = fig.add_subplot(2,2,2)
+    ax.plot(hist['loss'], label='Train loss')
+    ax.plot(hist['val_loss'], label='Validation loss')
+    ax.set_ylabel('Loss')
+    ax.set_xlabel('Epoch')
+    ax.legend(loc='lower left')
+    ax.set_title('Loss of RNN')
+
+
+    ## stock value
+    ax = fig.add_subplot(2,2,3)
+    ax.set_title('Stock value')
+
+
+    ## prediction
+    ax = fig.add_subplot(2,2,4)
+    ax.set_title('RNN prediction')
+
+
+
+
+    # plt.show()
+    fig.tight_layout()
+    fig.savefig('results-rnn.png')
+    fig.clf()
+
 
 
 
@@ -150,9 +189,9 @@ def main():
     # model = build_model(kind="RNN", nunits=64, nlayers=1, bidirectional=True)
 
     ## preparing model
-    batch = 8
+    batch = 2566 # 2566/4 steps 5132/8 steps
     timesteps = int(10264 / batch)
-    feature = 54
+    feature = 17
     SHAPE = (timesteps, feature)
     print(SHAPE)
 
@@ -192,3 +231,22 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+'''
+
+Notes
+what is the information problem?
+trend analysis
+    slope of stock
+
+long term
+    weekly
+
+is binary classification suitable?
+
+maybe 52 days is too much
+using sector as a feature
+use linear regression to derive a direction
+
+'''
