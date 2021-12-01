@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Embedding
@@ -94,11 +95,11 @@ def preprocess(path: str):
 
     X, y, SIZE = _clean_df(path)
 
-    X = np.array(X) # shape: (10264,54)
-    y = np.array(y.values) # (10264,)
+    X = np.array(X)  # shape: (10264,54)
+    y = np.array(y.values)  # (10264,)
 
     # dataset = np.array([X,y])
-    print(y.shape)
+
     # dataset = tf.data.Dataset.from_tensor_slices((X, y))
 
     # dataset = dataset.batch(52)
@@ -124,7 +125,7 @@ def preprocess(path: str):
     # test = test.take(test_size)
     #
     # return train, val, test
-
+    return X, y
     return dataset
 
 
@@ -133,19 +134,58 @@ def future(ndays: int):
     pass
 
 
+def reshape():
+    "compartmentalize reshaping of data"
+    pass
+
+def graph(hist):
+    'show results graphically'
+
+    print(hist.keys())
+
+    plt.plot(hist['accuracy'], label='train')
+    plt.plot(hist['val_accuracy'], label='validation')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(loc='lower right')
+
+    plt.show()
+
+
+
 def main():
     "main analysis will occur here"
 
     print(tf.version)
 
-    dataset = preprocess("datasets/csv_AAPL.csv")
+    X, y = preprocess("datasets/csv_AAPL.csv")
 
     # model = build_model(kind="RNN", nunits=64, nlayers=1, bidirectional=True)
 
+    ## preparing model
+    batch = 8
+    timesteps = int(10264 / batch)
+    feature = 54
+    SHAPE = (timesteps, feature)
+    print(SHAPE)
+
+    print(X.shape)
+
+    X = np.reshape(X, newshape=(batch, timesteps, feature))
+    y = np.reshape(y, newshape=(batch, timesteps, 1))
+
+    print()
+    print(y.shape)
+    print(X.shape)
+
+    ## building model
+    tf.random.set_seed(1)
     model = Sequential()
-    model.add(LSTM(32, input_shape=(54,3), return_sequences=True))
-    model.add(LSTM(16))
-    model.add(Dense(1))
+    model.add(LSTM(64, input_shape=SHAPE, return_sequences=True))
+    model.add(LSTM(16, return_sequences=True))
+    model.add(Dense(64, activation="relu"))
+    model.add(Dense(16, activation="relu"))
+    model.add(Dense(1, activation="sigmoid"))
 
     model.summary()
 
@@ -153,8 +193,14 @@ def main():
         optimizer="SGD", loss=tf.keras.losses.BinaryCrossentropy(), metrics=["accuracy"]
     )
 
-    print(dataset.numpy())
-    hist = model.fit(dataset.numpy(), epochs=10)
+    print(f"x shape: {X.shape}")
+    print(f"y shape: {y.shape}")
+
+    print()
+    hist = model.fit(x=X, y=y, epochs=10, verbose=1, validation_split=0.2)
+    hist = hist.history
+
+    graph(hist)
 
 
 if __name__ == "__main__":
