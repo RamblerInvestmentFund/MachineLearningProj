@@ -245,7 +245,6 @@ long term
 
 is binary classification suitable?
 
-maybe 52 days is too much
 using sector as a feature
 use linear regression to derive a direction
 
