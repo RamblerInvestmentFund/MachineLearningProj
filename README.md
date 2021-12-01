@@ -1,5 +1,5 @@
-# Machine Learning Project
-Target value: signal
+# Predicting Market Value
+This project attempts to predict the returns of stocks with respect to their previous returns and various technical indicators.
 
 ## Developer Notes:
 __remember to pull from repo before making changes__
