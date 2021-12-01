@@ -14,3 +14,5 @@ __remember to pull from repo before making changes__
 - numpy
 - pandas
 - tensorflow
+
+![accuracy](graphs/accuracy.png)

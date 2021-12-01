@@ -56,7 +56,7 @@ def build_model(input=(54,), kind="RNN", nunits=64, nlayers=1, bidirectional=Tru
     return model
 
 
-def _clean_df(path: str):
+def _clean(path: str):
     "preprocesses stock data"
 
     df = pd.read_csv(path)
@@ -93,25 +93,12 @@ def _clean_df(path: str):
 
 def preprocess(path: str):
 
-    X, y, SIZE = _clean_df(path)
+    X, y, SIZE = _clean(path)
 
     X = np.array(X)  # shape: (10264,54)
     y = np.array(y.values)  # (10264,)
 
-    # dataset = np.array([X,y])
-
-    # dataset = tf.data.Dataset.from_tensor_slices((X, y))
-
-    # dataset = dataset.batch(52)
-
-    ## prints
-    # for i, element in enumerate(dataset):
-    #     print(i, ":")
-    #     print(element)
-    #     print()
-    #
-    # print(type(dataset))
-    # print(SIZE)
+    'convert to tensor?'
 
     ## splitting the dataset
     # train_size = int(0.7 * SIZE)
@@ -182,7 +169,7 @@ def main():
     tf.random.set_seed(1)
     model = Sequential()
     model.add(LSTM(64, input_shape=SHAPE, return_sequences=True))
-    model.add(LSTM(16, return_sequences=True))
+    model.add(Bidirectional(LSTM(16, return_sequences=True)))
     model.add(Dense(64, activation="relu"))
     model.add(Dense(16, activation="relu"))
     model.add(Dense(1, activation="sigmoid"))
@@ -197,7 +184,7 @@ def main():
     print(f"y shape: {y.shape}")
 
     print()
-    hist = model.fit(x=X, y=y, epochs=10, verbose=1, validation_split=0.2)
+    hist = model.fit(x=X, y=y, epochs=100, verbose=2, validation_split=0.2)
     hist = hist.history
 
     graph(hist)
