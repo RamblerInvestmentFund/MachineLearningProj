@@ -2,17 +2,19 @@ import tensorflow as tf
 import numpy as np
 import pandas as pd
 
+from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Embedding
 from tensorflow.keras.layers import Bidirectional
 from tensorflow.keras.layers import SimpleRNN
 from tensorflow.keras.layers import LSTM
 from tensorflow.keras.layers import GRU
 from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import InputLayer
 
 from sklearn.preprocessing import StandardScaler
 
 
-def build_model(input=54, kind="RNN", nunits=64, nlayers=1, bidirectional=True):
+def build_model(input=(54,), kind="RNN", nunits=64, nlayers=1, bidirectional=True):
     """
     borrowed from textbook
     used to test many different types of RNNs
@@ -22,7 +24,6 @@ def build_model(input=54, kind="RNN", nunits=64, nlayers=1, bidirectional=True):
 
     # build the model
     model = tf.keras.Sequential()
-    model.add(Embedding(input_dim=input, output_dim=64))
 
     kind = kind.upper()  # prevents user error
 
@@ -93,7 +94,13 @@ def preprocess(path: str):
 
     X, y, SIZE = _clean_df(path)
 
-    dataset = tf.data.Dataset.from_tensor_slices((X, y))
+    X = np.array(X) # shape: (10264,54)
+    y = np.array(y.values) # (10264,)
+
+    # dataset = np.array([X,y])
+    print(y.shape)
+    # dataset = tf.data.Dataset.from_tensor_slices((X, y))
+
     # dataset = dataset.batch(52)
 
     ## prints
@@ -106,17 +113,24 @@ def preprocess(path: str):
     # print(SIZE)
 
     ## splitting the dataset
-    train_size = int(0.7 * SIZE)
-    val_size = int(0.15 * SIZE)
-    test_size = int(0.15 * SIZE)
+    # train_size = int(0.7 * SIZE)
+    # val_size = int(0.15 * SIZE)
+    # test_size = int(0.15 * SIZE)
+    #
+    # train = dataset.take(train_size)
+    # test = dataset.skip(train_size)
+    #
+    # val = test.skip(val_size)
+    # test = test.take(test_size)
+    #
+    # return train, val, test
 
-    train = dataset.take(train_size)
-    test = dataset.skip(train_size)
+    return dataset
 
-    val = test.skip(val_size)
-    test = test.take(test_size)
 
-    return train, val, test
+def future(ndays: int):
+    "predict a stock value n days into the future"
+    pass
 
 
 def main():
@@ -124,17 +138,23 @@ def main():
 
     print(tf.version)
 
-    train, val, test = preprocess("datasets/csv_AAPL.csv")
+    dataset = preprocess("datasets/csv_AAPL.csv")
 
-    model_kwargs = {"kind": "RNN", "nunits": 64, "nlayers": 1, "bidirectional": True}
-    # model = build_model(**model_kwargs)
-    model = build_model(kind="RNN", nunits=64, nlayers=1, bidirectional=True)
+    # model = build_model(kind="RNN", nunits=64, nlayers=1, bidirectional=True)
+
+    model = Sequential()
+    model.add(LSTM(32, input_shape=(54,3), return_sequences=True))
+    model.add(LSTM(16))
+    model.add(Dense(1))
+
+    model.summary()
 
     model.compile(
         optimizer="SGD", loss=tf.keras.losses.BinaryCrossentropy(), metrics=["accuracy"]
     )
 
-    hist = model.fit(train, validation_data=val, epochs=10)
+    print(dataset.numpy())
+    hist = model.fit(dataset.numpy(), epochs=10)
 
 
 if __name__ == "__main__":
