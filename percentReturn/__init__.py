@@ -26,8 +26,13 @@ def signal(x):
 
 df['Signal'] = df.apply(signal, axis=1)
 
+df[['Adj Close', 'Up Band', 'Middle Band', 'Down Band', 'Simple MA']].plot(figsize=(12,10))
+plt.show()
+
 
 print(df.head())
+
+
 
 
 # df['Close'].plot()
