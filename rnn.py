@@ -226,7 +226,7 @@ def main():
     hist = model.fit(x=X, y=y, epochs=100, verbose=2, validation_split=0.2)
     hist = hist.history
 
-    graph(hist)
+    # graph(hist)
 
 
 if __name__ == "__main__":
