@@ -10,7 +10,11 @@ df['Percent Return'] = df['Adj Close'].pct_change() * 100
 df['Daily Range'] = df['High'] - df['Low']
 df['Simple MA'] = ta.SMA(df['Adj Close'], timeperiod=10)
 df['Daily Close - SMA Difference'] = df['Adj Close'] - df['Simple MA']
-df['Up Band'], df['Middle Band'], df['Down Band'] = ta.BBANDS(df['Adj Close'], timeperiod=5)
+df['MACD'] = ta.MACD(df['Adj Close'], fastperiod=12, slowperiod=26, signalperiod=9)
+df['RSI'] = ta.RSI(df['Adj Close'], timeperiod=10)
+df['Up Band'], df['Middle Band'], df['Down Band'] = ta.BBANDS(df['Adj Close'], timeperiod=10)
+
+
 
 
 print(df.head())
