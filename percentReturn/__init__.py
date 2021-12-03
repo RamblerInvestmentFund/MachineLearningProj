@@ -12,11 +12,14 @@ df['Simple MA'] = ta.SMA(df['Adj Close'], timeperiod=10)
 df['Daily Close - SMA Difference'] = df['Adj Close'] - df['Simple MA']
 # df['MACD'] = ta.MACD(df['Adj Close'], fastperiod=12, slowperiod=26, signalperiod=9)
 df['RSI'] = ta.RSI(df['Adj Close'], timeperiod=9)
-df['Daily CLose - RSI'] = df['Adj Close'] - df['RSI']
+# df['Daily CLose - RSI'] = df['Adj Close'] - df['RSI']
 df['Up Band'], df['Middle Band'], df['Down Band'] = ta.BBANDS(df['Adj Close'], timeperiod=10)
-df['Daily Close - Up Band'] = df['Adj Close'] - df['Up Band']
-df['Daily Close - Middle Band'] = df['Adj Close'] - df['Middle Band']
-df['Daily Close - Down Band'] = df['Adj Close'] - df['Down Band']
+df['Daily Close - Up Band'] = abs(df['Adj Close'] - df['Up Band'])
+df['Daily Close - Middle Band'] = abs(df['Adj Close'] - df['Middle Band'])
+df['Daily Close - Down Band'] = abs(df['Adj Close'] - df['Down Band'])
+df['Daily Close - High'] = abs(df['Adj Close'] - df['High'])
+df['Daily Close - Low'] = abs(df['Adj Close'] - df['Low'])
+
 
 def signal(x):
     if x['Percent Return'] > 3:
@@ -31,6 +34,13 @@ plt.show()
 
 
 print(df.head())
+
+X = np.array(df.drop(['Open', 'High', 'Low', 'Close', 'Adj Close', 'Simple SMA', 'Up Band',
+                      'Middle Band', 'Down Band', 'Signal'], 1))
+Y = np.array(df['Signal'])
+
+
+print(X)
 
 
 
