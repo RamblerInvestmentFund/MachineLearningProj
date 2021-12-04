@@ -8,17 +8,17 @@
 
 Model: "sequential"
 
-Layer (type)                 Output Shape              Param   
+|    Layer (type)          |     Output Shape      |    Param    |
+|--------------------------|-----------------------|-------------|
+|    lstm (LSTM)           |    (None, 50, 128)    |    73728    |  
+|    bidirectional-lstm    |    (None, 50, 64)     |    41216    |
+|    dense (Dense)         |    (None, 50, 64)     |    4160     |
+|    dense_1 (Dense)       |    (None, 50, 16)     |    1040     |
+|    dense_2 (Dense)       |    (None, 50, 1)      |    17       |
 
-lstm (LSTM)                  (None, 50, 128)           73728     
-bidirectional-lstm           (None, 50, 64)            41216     
-dense (Dense)                (None, 50, 64)            4160      
-dense_1 (Dense)              (None, 50, 16)            1040      
-dense_2 (Dense)              (None, 50, 1)             17        
-
-Total params: 120,161
-Trainable params: 120,161
-Non-trainable params: 0
+* Total params: 120,161
+* Trainable params: 120,161
+* Non-trainable params: 0
 
 ## Dataset
 historical data was pulled from yahoo finance on 502 different stock tickers from the S&P 500
