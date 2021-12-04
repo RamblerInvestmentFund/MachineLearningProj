@@ -1,5 +1,5 @@
-*.csv
-*.npz
+datasets/*.csv
+*/*.npz
 
 ## matt virtual env
 .venv
