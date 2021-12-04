@@ -1,12 +1,9 @@
 # RNN
 
 ## Requirements
-- yfinance
-- ta-lib
-- sklearn
-- numpy
-- pandas
-- tensorflow
-- tensorflow_addons
+* work in a venv
+* `pip install -r requirements.txt`
 
-![accuracy](../graphs/results-rnn.png)
+
+### RNN trained on returns (54% accuracy)
+![accuracy](graphs/results-rnn.png)
