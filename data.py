@@ -49,6 +49,7 @@ def main():
         y_pred = model.predict(X_test)
         print("Accuracy: ", metrics.accuracy_score(y_test, y_pred))
         print("Precision: ", metrics.precision_score(y_test, y_pred, average="macro"))
+        print("Recall: ", metrics.recall_score(y_test, y_pred, average="macro"))
 
 if __name__ == '__main__':
     main()
