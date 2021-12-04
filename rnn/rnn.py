@@ -129,8 +129,8 @@ def main():
             ## input layer
             InputLayer(input_shape=SHAPE),
             ## recurrent layers
-            GRU(128, input_shape=SHAPE, return_sequences=True),
-            Bidirectional(GRU(32, return_sequences=True)),
+            LSTM(128, input_shape=SHAPE, return_sequences=True),
+            Bidirectional(LSTM(32, return_sequences=True)),
             ## dense layers
             Dense(64, activation="selu"),
             Dense(16, activation="elu"),

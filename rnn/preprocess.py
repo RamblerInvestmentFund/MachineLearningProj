@@ -130,7 +130,7 @@ def save_npz(stocks=snp(), name='snp500'):
 def load_npz(name='snp500'):
     'load npz file and return objects'
 
-    loaded = np.load(f'datasets/{name}.npz')
+    loaded = np.load(f'{name}.npz')
     X = loaded['X']
     y = loaded['y']
     return X,y
