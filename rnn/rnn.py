@@ -110,18 +110,19 @@ def graph(hist):
 def main():
     "main analysis will occur here"
 
-    # stocks = preprocess.snp()
-    # X, y, SHAPE = preprocess.rnn_data_pipeline(stocks=stocks, timesteps=50)
+    ## pulling data
+    stocks = preprocess.snp()
+    stocks = ['AAPL']
+    X, y, SHAPE = preprocess.rnn_data_pipeline(stocks=stocks, timesteps=50)
 
-    X, y = preprocess.load_npz()
-    SHAPE = X[0].shape
+    # X, y = preprocess.load_npz()
+    # SHAPE = X[0].shape
 
-    # X = X[0:2]
-    # y = y[0:2]
+
+    ## building model
 
     # model = build_model(kind="RNN", nunits=64, nlayers=1, bidirectional=True)
 
-    ## building model
     tf.random.set_seed(1)
 
     model = Sequential(
@@ -129,11 +130,11 @@ def main():
             ## input layer
             InputLayer(input_shape=SHAPE),
             ## recurrent layers
-            LSTM(128, input_shape=SHAPE, return_sequences=True),
+            LSTM(32, input_shape=SHAPE, return_sequences=True),
             Bidirectional(LSTM(32, return_sequences=True)),
             ## dense layers
-            Dense(64, activation="selu"),
-            Dense(16, activation="elu"),
+            Dense(16, activation="selu"),
+            Dense(16, activation="selu"),
             ## output layer
             Dense(1, activation="softmax"),
         ]
@@ -203,7 +204,7 @@ is binary classification suitable?
 
 TODO:
 - node dropout layer
-- shuffle the data
+- shuffle the data (batches)
 - train on stock returns not stock signal?
 - add more technical indicators
 

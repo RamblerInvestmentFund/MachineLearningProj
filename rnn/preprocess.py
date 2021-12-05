@@ -24,25 +24,6 @@ def get(stock):
 def process(df):
     """returns a normalized dataframe with technical indicators...
     ready to be fed into a model
-
-    features:
-        - Open
-        - High
-        - Low
-        - Close
-        - Adj Close
-        - Volume
-        - Upper BBand
-        - Middle BBand
-        - Lower BBand
-        - Percent Return
-        - Daily Range
-        - Simple MA
-        - MACD
-        - RSI
-        - Returns
-    target:
-        - Shifted Signal
     """
 
     ## technical indicators
@@ -89,8 +70,11 @@ def xy_split(df, timesteps):
     """
 
     ## split
-    y = np.array(df["Shifted Signal"])
-    X = np.array(df.drop("Shifted Signal", axis=1, inplace=False))
+    c = df.columns[-1]
+    y = np.array(df[c])
+    X = np.array(df.drop(c, axis=1, inplace=False))
+
+    quit()
 
     ## reshape
     timesteps = timesteps
