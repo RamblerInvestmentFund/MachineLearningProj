@@ -174,7 +174,7 @@ def main():
     print(f"y shape: {y.shape}")
 
     earlystopping = callbacks.EarlyStopping(
-        monitor="val_loss", mode="min", patience=50, restore_best_weights=True
+        monitor="val_loss", mode="min", patience=5, restore_best_weights=True
     )
 
     hist = model.fit(

@@ -74,7 +74,6 @@ def xy_split(df, timesteps):
     y = np.array(df[c])
     X = np.array(df.drop(c, axis=1, inplace=False))
 
-    quit()
 
     ## reshape
     timesteps = timesteps
