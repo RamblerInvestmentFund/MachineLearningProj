@@ -25,7 +25,11 @@ An SVM with a polynomial kernel is used.
 
 Various stock tickers are train the model one at a time.
 
-![accuracy-svm](graphs/svm/accuracy.png)
+### Graphs
+
+<img src="graphs/svm/confusion-matrix.png" width="400"/>
+<img src="graphs/svm/accuracy.png" width="400"/>
+<img src="graphs/svm/simulation.png" width="400"/>
 
 
 # RNN

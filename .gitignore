@@ -2,7 +2,7 @@
 datasets/*.csv
 */*.npz
 
-## images that are not in the graphs folder
+## images (unless specified)
 *.png
 
 ## matt virtual env

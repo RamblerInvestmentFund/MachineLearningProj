@@ -1,16 +1,15 @@
-from sklearn import metrics, preprocessing, svm
-from sklearn.model_selection import train_test_split
-
+import matplotlib.pyplot as plt
 import numpy as np
-
+from sklearn import metrics, preprocessing, svm
+from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
+from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 
-import matplotlib.pyplot as plt
+import data
 
-from ... import data
 
 def simulation(ticker):
-    '''simulate day trading and compare to a buy and hold strategy'''
+    """simulate day trading and compare to a buy and hold strategy"""
 
     model = svm.SVC(kernel="poly")
     df = data.preprocess(ticker)
@@ -27,56 +26,44 @@ def simulation(ticker):
     print(list(put_or_call))
     quit()
 
-    net = int(sum([val * action for val, action in zip(diff, put_or_call)]))
+    """
+    something needs to be fixed here
+    """
 
-    if net in dollars.keys():
-        dollars[net] += 1
-    else:
-        dollars[net] = 1
+    gains = [val * action for val, action in zip(diff, put_or_call)]
+    net = sum(gains)
 
+    return gains
 
 
 def plot_simulation(ticker):
 
+    figure: Figure = plt.figure()
+
     df = data.preprocess(ticker)
     value = list(df["Close Shifted"])
 
+    """
+    plot the net gain of the svm simulation
+    """
+    # gains = simulation(ticker)
+    # plt.plot([i for i in range(len(value))], gains, label='Day Traded')
 
-    figure: Figure = plt.figure()
-
-    plt.plot([i for i in range(len(value))], value, label='Buy & Hold')
+    plt.plot([i for i in range(len(value))], value, label="Buy & Hold")
+    plt.plot([2500 for i in range((140))], [i for i in range((140))], label="Day Traded")
 
     plt.ylabel(ylabel="Value")
     plt.xlabel(xlabel="Time (Days)")
-    # plt.xticks()
-
     plt.legend(loc="upper left")
-
-
-    plt.title(f"Success of SVM on {ticker} Simulation")
+    plt.title(f"Success of SVM on {ticker} Simulation (incomplete)")
 
     # plt.show()
     figure.savefig("simulation-svm.png")
     figure.clf()
 
-def plot_f1(ticker):
-    scores = {}
-    df = data.preprocess(ticker)
-
-    X_train, X_test, y_train, y_test = data.split(df)
-    model = svm.SVC(kernel="poly")
-
-    model.fit(X_train, y_train)
-
-    y_pred = model.predict(X_test)
-    print(list(y_pred))
-    quit()
-    score = metrics.accuracy_score(y_test, y_pred)
-
-
 
 def plot_accuracy(ticker, model, n=10000):
-    '''distribution of scores over {n} iterations'''
+    """distribution of scores over {n} iterations"""
 
     scores = {}
     df = data.preprocess(ticker)
@@ -112,17 +99,40 @@ def plot_accuracy(ticker, model, n=10000):
     figure.clf()
 
 
-def assess(model, X_test, y_test):
-    """determines effectiveness of the model"""
+def plot_confusion_matrix(ticker):
+
+    model = svm.SVC(kernel="poly")
+
+    ## init data
+    df = data.preprocess(ticker)
+    X_train, X_test, y_train, y_test = data.split(df)
+
+    model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
-    print("Accuracy: ", metrics.accuracy_score(y_test, y_pred))
-    print("Precision: ", metrics.precision_score(y_test, y_pred, average="macro"))
-    print("Recall: ", metrics.recall_score(y_test, y_pred, average="macro"))
+
+    ## init graph
+    fig = plt.figure()
+
+    cm = confusion_matrix(y_test, y_pred)
+    cm_display = ConfusionMatrixDisplay(cm).plot()
+    cm_display.plot(cmap=plt.cm.Blues)
+
+    plt.title(f"Confusion Matrix of SVM on {ticker}")
+    plt.savefig("confusion-matrix-svm.png")
+    plt.clf()
+
 
 def main():
 
-    stocks = ["AAPL", "MSFT", "SPY", "QQQ", "DIA", "TLT", "GLD", "CVX", "KO", "PEP", "PG", "JNJ", "GSK"]
+    stocks = [
+        "AAPL",
+        "MSFT",
+        "SPY",
+        "QQQ",
+    ]
+    # [ "DIA", "TLT", "GLD", "CVX", "KO", "PEP", "PG", "JNJ", "GSK"]
+
     model = svm.SVC(kernel="poly")
 
     for ticker in stocks:
@@ -132,7 +142,10 @@ def main():
 
         model.fit(X_train, y_train)
 
-        y_pred = assess(model, X_test, y_test)
+        y_pred = model.predict(X_test)
+        print("Accuracy: ", metrics.accuracy_score(y_test, y_pred))
+        print("Precision: ", metrics.precision_score(y_test, y_pred, average="macro"))
+        print("Recall: ", metrics.recall_score(y_test, y_pred, average="macro"))
 
 
 if __name__ == "__main__":
