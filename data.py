@@ -36,7 +36,6 @@ def preprocess(ticker):
 
     df["Returns"] = np.log(df["Open"] / df["Open"].shift(1))
     df["Signal"] = df["Returns"].apply(lambda x: 1 if x >= 0 else 0)
-    df = df.drop(["Returns"], axis=1)
     df = df[40:]
 
     return df
@@ -48,7 +47,7 @@ def split(df, ratio=0.30):
     ## splitting the dataset
     max_abs_scaler = preprocessing.MaxAbsScaler()
 
-    X = np.array(df.drop(["Signal"], axis=1))
+    X = np.array(df.drop(["Signal", "Returns"], axis=1))
     X = max_abs_scaler.fit_transform(X)
     Y = np.array(df["Signal"])
 
