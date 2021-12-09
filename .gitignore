@@ -1,7 +1,10 @@
+## datasets
 datasets/*.csv
 */*.npz
 
 ## matt virtual env
 .venv
 
+## machine code
 __pycache__*
+*/__pycache__*
