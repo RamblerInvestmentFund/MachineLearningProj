@@ -1,5 +1,6 @@
 import data
-from custom_models import rnn, svm
+
+import rnn, svm
 
 
 def main():

@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 import matplotlib.pyplot as plt
 
-import data
+from ... import data
 
 def simulation(ticker):
     '''simulate day trading and compare to a buy and hold strategy'''
@@ -132,13 +132,8 @@ def main():
 
         model.fit(X_train, y_train)
 
-        plot_accuracy(ticker, model)
-
         y_pred = assess(model, X_test, y_test)
-        y_pred = assess(model, X_train, y_train)
 
-
-        quit()
 
 if __name__ == "__main__":
     main()
