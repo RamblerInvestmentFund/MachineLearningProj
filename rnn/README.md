@@ -27,5 +27,9 @@ x shape: (55203, 50, 15)
 y shape: (55203, 50, 1)
 
 
-### RNN trained on returns (54% accuracy)
+### RNN trained on returns AAPL (54% accuracy)
 ![accuracy](graphs/results-rnn.png)
+
+### RNN trained on technical indicators SNP500 (57% accuracy)
+
+![accuracy](graphs/snp500.png)

@@ -111,12 +111,12 @@ def main():
     "main analysis will occur here"
 
     ## pulling data
-    stocks = preprocess.snp()
-    stocks = ['AAPL']
-    X, y, SHAPE = preprocess.rnn_data_pipeline(stocks=stocks, timesteps=50)
+    # stocks = preprocess.snp()
+    # stocks = ['AAPL']
+    # X, y, SHAPE = preprocess.rnn_data_pipeline(stocks=stocks, timesteps=50)
 
-    # X, y = preprocess.load_npz()
-    # SHAPE = X[0].shape
+    X, y = preprocess.load_npz()
+    SHAPE = X[0].shape
 
 
     ## building model
