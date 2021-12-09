@@ -28,6 +28,11 @@ def simulation(ticker):
 
     """
     something needs to be fixed here
+
+    because of the shuffling effect of splitting the training and test set,
+    how do you determine which predicted values should be associated with
+    which prices/returns?
+    
     """
 
     gains = [val * action for val, action in zip(diff, put_or_call)]
@@ -62,7 +67,7 @@ def plot_simulation(ticker):
     figure.clf()
 
 
-def plot_accuracy(ticker, model, n=10000):
+def plot_accuracy(ticker, model, n=10):
     """distribution of scores over {n} iterations"""
 
     scores = {}

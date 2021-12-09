@@ -1,10 +1,9 @@
 matplotlib
 numpy
 pandas
-scikit
-learn
+scikit-learn
 TA-Lib
-tensorflow
-addons
+tensorflow-addons
 tensorflow
 yfinance
+tqdm
