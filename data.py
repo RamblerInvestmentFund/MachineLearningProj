@@ -34,11 +34,21 @@ def preprocess(ticker):
     )
     df["Momentum"] = ta.MOM(df["Close Shifted"], timeperiod=12)
 
+    df["Gain Value"] = df["Open"] - df["Close"]
+    ' needs a better name or implementation? used in simulation'
+
     df["Returns"] = np.log(df["Open"] / df["Open"].shift(1))
     df["Signal"] = df["Returns"].apply(lambda x: 1 if x >= 0 else 0)
     df = df[40:]
 
     return df
+
+    """
+        df["Returns"] = df["Open"] / df["Open"].shift(1)
+        or
+        df["Returns"] = df["Open"] / df["Close"]
+        should stocks close out at the end of the day?
+    """
 
 
 def split(df, ratio=0.30):
@@ -46,6 +56,8 @@ def split(df, ratio=0.30):
 
     ## splitting the dataset
     max_abs_scaler = preprocessing.MaxAbsScaler()
+
+    df = df.drop(["High", "Low", "Close", "Adj Close", "Gain Value"], axis=1, inplace=False)
 
     X = np.array(df.drop(["Signal", "Returns"], axis=1))
     X = max_abs_scaler.fit_transform(X)
@@ -66,6 +78,7 @@ def main():
     df.to_csv(f"./datasets/csv_{ticker}.csv")
 
     # X_train, X_test, y_train, y_test = split(df)
+
 
 if __name__ == "__main__":
     main()

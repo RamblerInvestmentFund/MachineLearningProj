@@ -8,54 +8,61 @@ from tqdm import tqdm
 import data
 
 
-def simulation(ticker):
+def simulation(df):
     """simulate day trading and compare to a buy and hold strategy"""
 
     model = svm.SVC(kernel="poly")
-    df = data.preprocess(ticker)
-    X_train, X_test, y_train, y_test = data.split(df)
+
+    normalized_df=(df-df.mean())/df.std()
+
+    normalized_df["Signal"] = df["Signal"]
+    normalized_df = normalized_df.drop(["High", "Low", "Close", "Adj Close", "Returns"], axis=1, inplace=False)
+
+    train, test = train_test_split(normalized_df, test_size=0.2)
+
+    X_train = np.array(train[train.columns[:-2]])
+    y_train = np.array(train[train.columns[-1]])
+
+    X_test = np.array(test[test.columns[:-2]])
+    y_test = np.array(test[test.columns[-1]])
 
     model.fit(X_train, y_train)
 
-    # X = np.concatenate((X_train, X_test))
-    X = np.array(df.drop(["Signal", "Returns"], axis=1))
+    y_pred = list(model.predict(np.array(normalized_df[normalized_df.columns[:-2]])))
+    y_pred = [1 if i==1 else -1 for i in y_pred]
+    gain_value = list(df['Gain Value'])
 
-    put_or_call = list(model.predict(df[df.columns[:-2]]))
-    put_or_call = model.predict(X)
 
-    print(list(put_or_call))
-    quit()
-
-    """
-    something needs to be fixed here
-
-    because of the shuffling effect of splitting the training and test set,
-    how do you determine which predicted values should be associated with
-    which prices/returns?
-    
-    """
-
-    gains = [val * action for val, action in zip(diff, put_or_call)]
+    gains = [val * action for val, action in zip(gain_value, y_pred)]
     net = sum(gains)
 
-    return gains
+    cumulative_gains = []
+    total = 0
+    for item in gains:
+        total += item
+        cumulative_gains += [total]
+
+    return cumulative_gains
 
 
-def plot_simulation(ticker):
+def plot_simulation(ticker, n=100):
 
     figure: Figure = plt.figure()
 
     df = data.preprocess(ticker)
     value = list(df["Close Shifted"])
 
-    """
-    plot the net gain of the svm simulation
-    """
-    # gains = simulation(ticker)
-    # plt.plot([i for i in range(len(value))], gains, label='Day Traded')
 
     plt.plot([i for i in range(len(value))], value, label="Buy & Hold")
-    plt.plot([2500 for i in range((140))], [i for i in range((140))], label="Day Traded")
+
+
+    gains = simulation(df)
+    plt.plot([i for i in range(len(gains))], gains, 'r', alpha=0.3, label='Day Traded')
+
+    for i in tqdm(range(n)):
+        gains = simulation(df)
+        plt.plot([i for i in range(len(gains))], gains, 'r', alpha=0.3)
+
 
     plt.ylabel(ylabel="Value")
     plt.xlabel(xlabel="Time (Days)")
