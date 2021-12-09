@@ -67,7 +67,7 @@ def plot_simulation(ticker, n=100):
     plt.ylabel(ylabel="Value")
     plt.xlabel(xlabel="Time (Days)")
     plt.legend(loc="upper left")
-    plt.title(f"Success of SVM on {ticker} Simulation (incomplete)")
+    plt.title(f"Success of SVM on {ticker} Simulation")
 
     # plt.show()
     figure.savefig("simulation-svm.png")
