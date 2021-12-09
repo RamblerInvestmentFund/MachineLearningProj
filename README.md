@@ -27,10 +27,9 @@ Various stock tickers are train the model one at a time.
 
 ### Graphs
 
-<img src="graphs/svm/confusion-matrix.png" width="200"/>
-<img src="graphs/svm/accuracy.png" width="200"/>
-<img src="graphs/svm/simulation.png" width="400"/>
-
+![confusion](graphs/svm/confusion-matrix.png)
+![accuracy](graphs/svm/accuracy.png)
+![simulation](graphs/svm/simulation.png)
 
 # RNN
 
