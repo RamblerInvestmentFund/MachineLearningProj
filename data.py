@@ -20,7 +20,7 @@ def preprocess(ticker):
     ## download dataset
     df = yf.download(tickers=ticker, ) # start="2001-01-01"
 
-    ## technical indicators
+    ## Technical indicators
     df["High Shifted"] = df["High"].shift(1)
     df["Low Shifted"] = df["Low"].shift(1)
     df["Close Shifted"] = df["Close"].shift(1)
