@@ -18,7 +18,7 @@ def preprocess(ticker):
     """returns a pandas dataframe with technical indicators"""
 
     ## download dataset
-    df = yf.download(tickers=ticker, start="2001-01-01")
+    df = yf.download(tickers=ticker, ) # start="2001-01-01"
 
     ## technical indicators
     df["High Shifted"] = df["High"].shift(1)
@@ -34,21 +34,22 @@ def preprocess(ticker):
     )
     df["Momentum"] = ta.MOM(df["Close Shifted"], timeperiod=12)
 
-    df["Gain Value"] = df["Open"] - df["Close"]
-    ' needs a better name or implementation? used in simulation'
+    df["Gain Value"] = df["Open"] - df["Open"].shift(1)
+    'used in simulation not in fitting the model'
 
-    df["Returns"] = np.log(df["Open"] / df["Open"].shift(1))
-    df["Signal"] = df["Returns"].apply(lambda x: 1 if x >= 0 else 0)
+    '''
+        df["Returns"] = df["Open"] / df["Open"].shift(1)
+            predicts the past
+
+        we need to predict future returns with past data
+            (not yesterday's returns)
+    '''
+
+    df["Returns"] = np.log(df["Open"].shift(-1) / df["Open"])
+    df["Signal"] = df["Returns"].apply(lambda x: 1 if x > 0 else 0)
     df = df[40:]
 
     return df
-
-    """
-        df["Returns"] = df["Open"] / df["Open"].shift(1)
-        or
-        df["Returns"] = df["Open"] / df["Close"]
-        should stocks close out at the end of the day?
-    """
 
 
 def split(df, ratio=0.30):

@@ -9,7 +9,7 @@ def main():
     "final print statements etc"
 
     ## runs the svm code
-    svm.main()
+    # svm.main()
 
     ## runs the rnn code
     # rnn.main()

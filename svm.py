@@ -7,12 +7,23 @@ from tqdm import tqdm
 
 import data
 
+'''
+maybe it would be better for the model
+to be trained on the first x% of data
+rather than a random x%
 
-def simulation(df):
+since it is a sequential model there is no reason to predict
+returns that are before other returns we (users) already know
+
+ie: if i know the value of a stock in 2020 i dont need to predict
+the ones from 2019 etc cuz its not useful to trading
+'''
+
+
+def simulation(df, model):
     """simulate day trading and compare to a buy and hold strategy"""
 
-    model = svm.SVC(kernel="poly")
-
+    # maybe min-max normalized is better ... ask anthony
     normalized_df=(df-df.mean())/df.std()
 
     normalized_df["Signal"] = df["Signal"]
@@ -28,12 +39,22 @@ def simulation(df):
 
     model.fit(X_train, y_train)
 
-    y_pred = list(model.predict(np.array(normalized_df[normalized_df.columns[:-2]])))
-    y_pred = [1 if i==1 else -1 for i in y_pred]
+
+    # predicting net value
     gain_value = list(df['Gain Value'])
+    y_pred = list(model.predict(np.array(normalized_df[normalized_df.columns[:-2]])))
 
+    y_pred = [1 if i==1 else -1 for i in y_pred]
 
-    gains = [val * action for val, action in zip(gain_value, y_pred)]
+    # interpretting class labels ... might need a double check
+    gain1 = [val * action for val, action in zip(gain_value, y_pred)]
+    gain2 = [val * -action for val, action in zip(gain_value, y_pred)]
+
+    gains = gain1 if sum(gain1) > sum(gain2) else gain2
+
+    ## perfect guesser
+    # gains = [abs(val) for val in gain_value]
+
     net = sum(gains)
 
     cumulative_gains = []
@@ -45,24 +66,38 @@ def simulation(df):
     return cumulative_gains
 
 
-def plot_simulation(ticker, n=100):
+def plot_simulation(ticker, n=10):
 
     figure: Figure = plt.figure()
 
+    model = svm.SVC(kernel="poly")
+
     df = data.preprocess(ticker)
     value = list(df["Close Shifted"])
+    value = [v - value[0] for v in value]
+
+    gains = simulation(df, model)
+    plt.plot([i for i in range(len(gains))], gains, 'r', alpha=0.3, label='Day Traded')
+
+    avg_gains = []
+    for i in tqdm(range(n)):
+        gains = simulation(df, model)
+        plt.plot([i for i in range(len(gains))], gains, 'r', alpha=0.3)
+        avg_gains += [gains[-1]]
+    avg_gains = int(sum(avg_gains) / len(avg_gains))
+
+    print(f'Average gains on {ticker}:      {avg_gains}')
+    print(f'Buy and Hold Gains on {ticker}: {int(value[-1])}')
+    print()
 
 
     plt.plot([i for i in range(len(value))], value, label="Buy & Hold")
 
+    '''idea:
+    plot average of day trades as a darker red line
+    '''
 
-    gains = simulation(df)
-    plt.plot([i for i in range(len(gains))], gains, 'r', alpha=0.3, label='Day Traded')
-
-    for i in tqdm(range(n)):
-        gains = simulation(df)
-        plt.plot([i for i in range(len(gains))], gains, 'r', alpha=0.3)
-
+    assess(df, model)
 
     plt.ylabel(ylabel="Value")
     plt.xlabel(xlabel="Time (Days)")
@@ -70,12 +105,14 @@ def plot_simulation(ticker, n=100):
     plt.title(f"Success of SVM on {ticker} Simulation")
 
     # plt.show()
-    figure.savefig("simulation-svm.png")
+    figure.savefig(f"{ticker}-simulation-svm.png")
     figure.clf()
 
 
-def plot_accuracy(ticker, model, n=10):
+def plot_accuracy(ticker, n=10):
     """distribution of scores over {n} iterations"""
+
+    model = svm.SVC(kernel="poly")
 
     scores = {}
     df = data.preprocess(ticker)
@@ -107,7 +144,7 @@ def plot_accuracy(ticker, model, n=10):
     plt.bar(scores.keys(), scores.values(), width=0.009)
 
     # plt.show()
-    figure.savefig("accuracy-svm.png")
+    figure.savefig(f"{ticker}-accuracy-svm.png")
     figure.clf()
 
 
@@ -131,8 +168,20 @@ def plot_confusion_matrix(ticker):
     cm_display.plot(cmap=plt.cm.Blues)
 
     plt.title(f"Confusion Matrix of SVM on {ticker}")
-    plt.savefig("confusion-matrix-svm.png")
+    plt.savefig(f"{ticker}-confusion-matrix-svm.png")
     plt.clf()
+
+def assess(df, model):
+    'assesses effectiveness of a stock ticker'
+
+    X_train, X_test, y_train, y_test = data.split(df)
+
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+    print("Accuracy: ", metrics.accuracy_score(y_test, y_pred))
+    print("Precision: ", metrics.precision_score(y_test, y_pred, average="macro"))
+    print("Recall: ", metrics.recall_score(y_test, y_pred, average="macro"))
 
 
 def main():

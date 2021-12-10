@@ -20,6 +20,22 @@ from tensorflow.keras.optimizers import SGD, Adam
 import preprocess
 from preprocess import rnn_data_pipeline, snp
 
+'''
+predict all features
+
+fontend = df...
+for i in n_steps:
+
+    tomorrow = []
+    for f in feature:
+        model.fit(df[!f], df[f])
+        ft = model.predict(df[!f])
+        tomorrow += [ft]
+
+    frontend += [tomorrow]
+    frontend.remove(0)
+'''
+
 
 def build_model(input=(54,), kind="RNN", nunits=64, nlayers=1, bidirectional=True):
     """
