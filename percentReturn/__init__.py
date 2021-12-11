@@ -31,10 +31,9 @@ df['Daily Close - Low'] = abs(df['Adj Close'] - df['Low'])
 def signal(x):
     if x['Percent Return'] > 2:
         return 1
-    elif x['Percent Return'] < -2:
-        return -1
-    else:
+    elif x['Percent Return'] < 2:
         return 0
+
 
 
 df['Signal'] = df.apply(signal, axis=1)
@@ -73,8 +72,8 @@ print(grid.best_params_)
 
 # SVC With Best Parameters
 grid_pred = grid.predict(X_dev)
-cmatrix = np.array(confusion_matrix(y_dev, grid_pred, labels = [1, -1]))
-confusion_best = pd.DataFrame(cmatrix, index = ['Greater than 2percent', 'Less than -2percent'],
-                              columns = ['Predicted Greater than 2percent', 'Predicted Less than -2percent'])
+cmatrix = np.array(confusion_matrix(y_dev, grid_pred, labels = [1, 0]))
+confusion_best = pd.DataFrame(cmatrix, index = ['Greater than 2percent', 'Less than 2percent'],
+                              columns = ['Predicted Greater than 2percent', 'Predicted Less than 2percent'])
 print(confusion_best)
 print(classification_report(y_dev, grid_pred))
