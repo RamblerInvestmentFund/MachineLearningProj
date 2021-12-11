@@ -31,12 +31,21 @@ df['Daily Close - Low'] = abs(df['Adj Close'] - df['Low'])
 
 #COMPUTE SIGNAL FOR POS AND NEG
 #COMPUTE SIGNAL FOR POS AND NEG W SHORTING
-def signal(x):
-    if x['Percent Return'] > 2:
+
+# Signal for pos/neg percent returns
+def signal (x):
+    if x['Percent Return'] > 0:
         return 1
-    elif x['Percent Return'] < 2:
+    elif x['Percent Return'] < 0:
         return 0
 
+# Signal for pos/neg percent returns with shorting
+# Percent val can be adjusted
+def signal (x):
+    if x['Percent Return'] > 2:
+        return 1
+    elif x['Percent Return'] < -2:
+        return 0
 
 
 df['Signal'] = df.apply(signal, axis=1)
