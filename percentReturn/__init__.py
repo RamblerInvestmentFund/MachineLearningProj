@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import classification_report, confusion_matrix
 
-df = yf.download('SPY', start='2009-01-01', end='2020-10-29')
+df = yf.download('SPY', start='2009-01-01', end='2021-10-29')
 
 # Technicals Dataframe
 df['Percent Return'] = df['Adj Close'].pct_change() * 100
