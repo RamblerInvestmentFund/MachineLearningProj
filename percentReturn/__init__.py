@@ -14,6 +14,8 @@ df = yf.download('SPY', start='2009-01-01', end='2021-10-29')
 
 # Technicals Dataframe
 df['Percent Return'] = df['Adj Close'].pct_change() * 100
+#ADD WEEKLY BASIS
+
 df['Daily Range'] = df['High'] - df['Low']
 df['Simple MA'] = ta.SMA(df['Adj Close'], timeperiod=10)
 df['Daily Close - SMA Difference'] = df['Adj Close'] - df['Simple MA']
@@ -27,7 +29,8 @@ df['Daily Close - Down Band'] = abs(df['Adj Close'] - df['Down Band'])
 df['Daily Close - High'] = abs(df['Adj Close'] - df['High'])
 df['Daily Close - Low'] = abs(df['Adj Close'] - df['Low'])
 
-
+#COMPUTE SIGNAL FOR POS AND NEG
+#COMPUTE SIGNAL FOR POS AND NEG W SHORTING
 def signal(x):
     if x['Percent Return'] > 2:
         return 1
@@ -73,6 +76,7 @@ print(grid.best_params_)
 # SVC With Best Parameters
 grid_pred = grid.predict(X_dev)
 cmatrix = np.array(confusion_matrix(y_dev, grid_pred, labels = [1, 0]))
+#INTRODUCE THIRD ROW IN CONFUSION MATRIX FOR SHORTING ACCURACY
 confusion_best = pd.DataFrame(cmatrix, index = ['Greater than 2percent', 'Less than 2percent'],
                               columns = ['Predicted Greater than 2percent', 'Predicted Less than 2percent'])
 print(confusion_best)
