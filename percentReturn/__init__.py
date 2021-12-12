@@ -13,8 +13,9 @@ from sklearn.metrics import classification_report, confusion_matrix
 df = yf.download('SPY', start='2009-01-01', end='2021-10-29')
 
 # Technicals Dataframe
-df['Percent Return'] = df['Adj Close'].pct_change() * 100
-#ADD WEEKLY BASIS
+df['Percent Return'] = df['Adj Close'].pct_change(periods=7) * 100
+#print(df['Percent Return'])
+
 
 df['Daily Range'] = df['High'] - df['Low']
 df['Simple MA'] = ta.SMA(df['Adj Close'], timeperiod=10)
