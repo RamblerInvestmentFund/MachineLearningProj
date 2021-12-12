@@ -1,0 +1,4 @@
+Signalling can be used to filter between positive and negative results
+
+In POS/NEG:
+Using weekly periods when computing percent returns yields a higher accuracy than useing daily periods

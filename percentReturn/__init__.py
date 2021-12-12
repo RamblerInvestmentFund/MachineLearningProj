@@ -13,9 +13,10 @@ from sklearn.metrics import classification_report, confusion_matrix
 df = yf.download('SPY', start='2009-01-01', end='2021-10-29')
 
 # Technicals Dataframe
+# Daily
+#df['Percent Return'] = df['Adj Close'].pct_change(periods=1) * 100
+# Weekly
 df['Percent Return'] = df['Adj Close'].pct_change(periods=7) * 100
-#print(df['Percent Return'])
-
 
 df['Daily Range'] = df['High'] - df['Low']
 df['Simple MA'] = ta.SMA(df['Adj Close'], timeperiod=10)
@@ -86,7 +87,7 @@ print(grid.best_params_)
 grid_pred = grid.predict(X_dev)
 cmatrix = np.array(confusion_matrix(y_dev, grid_pred, labels = [1, 0]))
 #INTRODUCE THIRD ROW IN CONFUSION MATRIX FOR SHORTING ACCURACY
-confusion_best = pd.DataFrame(cmatrix, index = ['Greater than 2percent', 'Less than 2percent'],
-                              columns = ['Predicted Greater than 2percent', 'Predicted Less than 2percent'])
+confusion_best = pd.DataFrame(cmatrix, index = ['Positive percent', 'Negative percent'],
+                              columns = ['Predicted Positive percent', 'Predicted Negative percent'])
 print(confusion_best)
 print(classification_report(y_dev, grid_pred))
