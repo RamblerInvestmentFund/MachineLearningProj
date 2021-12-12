@@ -36,7 +36,7 @@ df['Daily Close - Low'] = abs(df['Adj Close'] - df['Low'])
 def signal (x):
     if x['Percent Return'] > 0:
         return 1
-    elif x['Percent Return'] < 0:
+    else:
         return 0
 
 # Signal for pos/neg percent returns with shorting
