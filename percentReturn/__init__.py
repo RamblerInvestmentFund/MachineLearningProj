@@ -42,11 +42,10 @@ def signal (x):
 # Signal for pos/neg percent returns with shorting
 # Percent val can be adjusted
 def signal (x):
-    if x['Percent Return'] > 2:
+    if x['Percent Return'] > 2 or x['Percent Return'] < -4:
         return 1
-    elif x['Percent Return'] < -2:
+    else:
         return 0
-
 
 df['Signal'] = df.apply(signal, axis=1)
 
