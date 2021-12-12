@@ -30,10 +30,7 @@ df['Daily Close - Middle Band'] = abs(df['Adj Close'] - df['Middle Band'])
 df['Daily Close - Down Band'] = abs(df['Adj Close'] - df['Down Band'])
 df['Daily Close - High'] = abs(df['Adj Close'] - df['High'])
 df['Daily Close - Low'] = abs(df['Adj Close'] - df['Low'])
-
-#COMPUTE SIGNAL FOR POS AND NEG
-#COMPUTE SIGNAL FOR POS AND NEG W SHORTING
-
+ 
 # Signal for pos/neg percent returns
 def signal (x):
     if x['Percent Return'] > 0:
