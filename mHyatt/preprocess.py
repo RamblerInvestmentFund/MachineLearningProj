@@ -121,32 +121,8 @@ def load_npz(name='snp500'):
 
 def main():
 
-    stocks = [
-        "AAPL",
-        "MSFT",
-        "SPY",
-        "QQQ",
-        "DIA",
-        "TLT",
-        "GLD",
-        "CVX",
-        "KO",
-        "PEP",
-        "PG",
-        "JNJ",
-        "GSK",
-    ]
 
-    for stock in stocks:
-
-        ## pull from yahoo finance
-        df = get(stock)
-
-        ## preprocess
-        df = process(df)
-
-        ## save to csv
-        df.to_csv(path_or_buf=f"{stock}.csv")
+    save_npz()
 
 
 if __name__ == "__main__":

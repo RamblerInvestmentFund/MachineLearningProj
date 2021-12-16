@@ -21,9 +21,8 @@ from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 import preprocess
 from preprocess import rnn_data_pipeline, snp
 
-
-
 """
+TODO
 predict all features
 
 fontend = df...
@@ -89,11 +88,10 @@ def plot_confusion_matrix(y_test, y_pred):
     ## init graph
     fig = plt.figure()
 
-    cm = confusion_matrix(y_test, y_pred)
-    cm_display = ConfusionMatrixDisplay(cm).plot()
-    cm_display.plot(cmap=plt.cm.Blues)
+    cm = confusion_matrix(y_test, y_pred, labels=[1,0])
+    cm_display = ConfusionMatrixDisplay(y_test, y_pred).plot()
 
-    plt.title(f"Confusion Matrix of RNN on S&P")
+    plt.title(f"Confusion Matrix of RNN on S&P 500")
     plt.savefig(f"confusion-matrix-rnn.png")
     plt.clf()
 
@@ -181,13 +179,10 @@ def main():
 
     graph(hist)
 
-    predictions = model.predict(val[0])
-    print(type(predictions))
-    print(predictions.shape)
-    confusion = tf.math.confusion_matrix(val[1], predictions)
-
-    print('confusion matrix')
-    print(confusion)
+    y_pred = model.predict(val[0])
+    confusion = [list(np.reshape(val[1], (1,-1)).values.argmax(axis=1)),list(np.reshape(y_pred, (1,-1)).values.argmax(axis=1))]
+    print(type(confusion[0]), type(confusion[1]))
+    plot_confusion_matrix( confusion[0], confusion[1] )
 
 
 if __name__ == "__main__":

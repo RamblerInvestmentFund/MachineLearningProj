@@ -5,9 +5,9 @@ from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 
-import mHyatt.data as data
+import data
 
-'''
+"""
 maybe it would be better for the model
 to be trained on the first x% of data
 rather than a random x%
@@ -17,20 +17,24 @@ returns that are before other returns we (users) already know
 
 ie: if i know the value of a stock in 2020 i dont need to predict
 the ones from 2019 etc cuz its not useful to trading
-'''
+"""
 
 
 def simulation(df, model):
     """simulate day trading and compare to a buy and hold strategy"""
 
     ## normalizing the dataset
-    normalized_df=(df-df.mean())/df.std()
+    normalized_df = (df - df.mean()) / df.std()
     normalized_df["Signal"] = df["Signal"]
-    normalized_df = normalized_df.drop(["High", "Low", "Close", "Adj Close", "Returns"], axis=1, inplace=False)
-
+    normalized_df = normalized_df.drop(
+        ["High", "Low", "Close", "Adj Close", "Returns"], axis=1, inplace=False
+    )
 
     ## splitting data
-    train, test = train_test_split(normalized_df, test_size=0.2,)
+    train, test = train_test_split(
+        normalized_df,
+        test_size=0.2,
+    )
 
     X_train = np.array(train[train.columns[:-2]])
     y_train = np.array(train[train.columns[-1]])
@@ -41,12 +45,11 @@ def simulation(df, model):
     ## training model
     model.fit(X_train, y_train)
 
-
     ## predicting net value
-    gain_value = list(df['Gain Value'])
+    gain_value = list(df["Gain Value"])
     y_pred = list(model.predict(np.array(normalized_df[normalized_df.columns[:-2]])))
 
-    y_pred = [1 if i==1 else -1 for i in y_pred]
+    y_pred = [1 if i == 1 else -1 for i in y_pred]
     gains = [val * action for val, action in zip(gain_value, y_pred)]
 
     ## perfect guesser
@@ -75,25 +78,24 @@ def plot_simulation(ticker, n=10):
     value = [v - value[0] for v in value]
 
     gains = simulation(df, model)
-    plt.plot([i for i in range(len(gains))], gains, 'r', alpha=0.3, label='Day Traded')
+    plt.plot([i for i in range(len(gains))], gains, "r", alpha=0.3, label="Day Traded")
 
     avg_gains = []
     for i in tqdm(range(n)):
         gains = simulation(df, model)
-        plt.plot([i for i in range(len(gains))], gains, 'r', alpha=0.3)
+        plt.plot([i for i in range(len(gains))], gains, "r", alpha=0.3)
         avg_gains += [gains[-1]]
     avg_gains = int(sum(avg_gains) / len(avg_gains))
 
-    print(f'Average gains on {ticker}:      {avg_gains}')
-    print(f'Buy and Hold Gains on {ticker}: {int(value[-1])}')
+    print(f"Average gains on {ticker}:      {avg_gains}")
+    print(f"Buy and Hold Gains on {ticker}: {int(value[-1])}")
     print()
-
 
     plt.plot([i for i in range(len(value))], value, label="Buy & Hold")
 
-    '''idea:
+    """idea:
     plot average of day trades as a darker red line
-    '''
+    """
 
     assess(df, model)
 
@@ -169,8 +171,9 @@ def plot_confusion_matrix(ticker):
     plt.savefig(f"{ticker}-confusion-matrix-svm.png")
     plt.clf()
 
+
 def assess(df, model):
-    'assesses effectiveness of a stock ticker'
+    "assesses effectiveness of a stock ticker"
 
     X_train, X_test, y_train, y_test = data.split(df)
 
@@ -184,13 +187,22 @@ def assess(df, model):
 
 def main():
 
-    stocks = [
-        "AAPL",
-        "MSFT",
-        "SPY",
-        "QQQ",
-    ]
-    # [ "DIA", "TLT", "GLD", "CVX", "KO", "PEP", "PG", "JNJ", "GSK"]
+    # stocks = [
+    #     "AAPL",
+    #     "MSFT",
+    #     "SPY",
+    #     "QQQ",
+    #     "DIA",
+    #     "TLT",
+    #     "GLD",
+    #     "CVX",
+    #     "KO",
+    #     "PEP",
+    #     "PG",
+    #     "JNJ",
+    #     "GSK",
+    # ]
+    stocks = ['SPY']
 
     model = svm.SVC(kernel="poly")
 

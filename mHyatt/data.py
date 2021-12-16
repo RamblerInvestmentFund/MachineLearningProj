@@ -18,7 +18,7 @@ def preprocess(ticker):
     """returns a pandas dataframe with technical indicators"""
 
     ## download dataset
-    df = yf.download(tickers=ticker,start="2001-01-01")
+    df = yf.download(tickers=ticker, start="2001-01-01")
 
     ## Technical indicators
     df["High Shifted"] = df["High"].shift(1)
@@ -35,9 +35,10 @@ def preprocess(ticker):
     df["Momentum"] = ta.MOM(df["Close Shifted"], timeperiod=12)
 
     df["Gain Value"] = df["Open"].shift(-1) - df["Open"]
-    'used in simulation not in fitting the model'
+    "used in simulation not in fitting the model"
 
-    df["Returns"] = np.log(df["Open"] / df["Close"].shift(1))
+    ## only good for intra day trading
+    df["Returns"] = np.log(df["Open"] / df["Open"].shift(1))
     df["Signal"] = df["Returns"].apply(lambda x: 1 if x > 0 else 0)
     df = df[40:]
     df = df.dropna()
@@ -51,7 +52,21 @@ def split(df, ratio=0.30):
     ## splitting the dataset
     max_abs_scaler = preprocessing.MaxAbsScaler()
 
-    df = df.drop(["High", "Low", "Close", "Adj Close", "Gain Value"], axis=1, inplace=False)
+    df = df.drop(
+        [
+            "High",
+            "High Shifted",
+            "Low Shifted",
+            "Close Shifted",
+            "Volume",
+            "Low",
+            "Close",
+            "Adj Close",
+            "Gain Value",
+        ],
+        axis=1,
+        inplace=False,
+    )
 
     X = np.array(df.drop(["Signal", "Returns"], axis=1))
     X = max_abs_scaler.fit_transform(X)
