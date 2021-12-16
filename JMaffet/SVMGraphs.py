@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from talib import MA_Type
 from tqdm import tqdm
 
-import data
+import mHyatt.data as data
 import JMaffet.RIFSVM as RIFSVM
 
 '''
