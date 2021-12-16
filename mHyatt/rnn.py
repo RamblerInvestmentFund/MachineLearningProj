@@ -98,8 +98,12 @@ def plot_confusion_matrix(y_test, y_pred):
 def main():
     "main analysis will occur here"
 
-    X, y = preprocess.load_npz()
-    SHAPE = X[0].shape
+    # preprocess.save_npz()
+    try:
+        X, y = preprocess.load_npz()
+        SHAPE = X[0].shape
+    except:
+        X, y, SHAPE = preprocess.rnn_data_pipeline(["SPY"])
 
     ## building model
     tf.random.set_seed(1)
@@ -179,10 +183,10 @@ def main():
 
     graph(hist)
 
-    y_pred = model.predict(val[0])
-    confusion = [list(np.reshape(val[1], (1,-1)).values.argmax(axis=1)),list(np.reshape(y_pred, (1,-1)).values.argmax(axis=1))]
-    print(type(confusion[0]), type(confusion[1]))
-    plot_confusion_matrix( confusion[0], confusion[1] )
+    # y_pred = model.predict(val[0])
+    # confusion = [list(np.reshape(val[1], (1,-1)).values.argmax(axis=1)),list(np.reshape(y_pred, (1,-1)).values.argmax(axis=1))]
+    # print(type(confusion[0]), type(confusion[1]))
+    # plot_confusion_matrix( confusion[0], confusion[1] )
 
 
 if __name__ == "__main__":
@@ -201,9 +205,6 @@ TODO:
 - train on stock returns not stock signal?
 - add more technical indicators
 
-
-l2 l1 regularization
-golden test : 1 or 2 samples
 
 gradient tape
 
