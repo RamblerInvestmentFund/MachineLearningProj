@@ -28,7 +28,7 @@ Downloads Data, creates Dataframe, and splits into train/test
 
 '''
 
-stocks = ["AAPL"] #, "MSFT", "SPY", "QQQ", "DIA", "TLT", "GLD", "CVX", "KO", "PEP", "PG", "JNJ", "GSK"]
+stocks = ["JPM"] #, "MSFT", "SPY", "QQQ", "DIA", "TLT", "GLD", "CVX", "KO", "PEP", "PG", "JNJ", "GSK"]
 frames = []
 for i in stocks:
 
@@ -48,8 +48,9 @@ for i in stocks:
     df = df[40:]
     frames.append(df)
 
+
 max_abs_scaler = preprocessing.MaxAbsScaler()
-X = np.array(frames[0].drop(columns = ["Signal", "Returns", "Open", "High", "Low", "Close", "Adj Close", "High Shifted", "Low Shifted", "Close Shifted"], axis = 1))
+X = np.array(frames[0].drop(columns = ["Signal", "Returns", "Open", "High", "Low", "Close", "Adj Close", "High Shifted", "Low Shifted", "Close Shifted", "Volume"], axis = 1))
 X = max_abs_scaler.fit_transform(X)
 Y = np.array(frames[0]["Signal"])
 
@@ -131,41 +132,41 @@ Computing Sharpe Ratio as well
 
 '''
 
-# pred_len = len(y_pred)
+pred_len = len(y_pred)
 
-# frames[0]['SVM Signal'] = 0
-# frames[0]['SVM Returns'] = 0
-# frames[0]['Total Strat Returns'] = 0
-# frames[0]['Market Returns'] = 0
+frames[0]['SVM Signal'] = 0
+frames[0]['SVM Returns'] = 0
+frames[0]['Total Strat Returns'] = 0
+frames[0]['Market Returns'] = 0
 
-# Signal_Column = frames[0].columns.get_loc('SVM Signal')
-# Strat_Column = frames[0].columns.get_loc('SVM Returns')
-# Return_Column = frames[0].columns.get_loc('Total Strat Returns')
-# Market_Column = frames[0].columns.get_loc('Market Returns')
+Signal_Column = frames[0].columns.get_loc('SVM Signal')
+Strat_Column = frames[0].columns.get_loc('SVM Returns')
+Return_Column = frames[0].columns.get_loc('Total Strat Returns')
+Market_Column = frames[0].columns.get_loc('Market Returns')
 
-# frames[0].iloc[-pred_len:,Signal_Column] = list(map(int,y_pred))
-# frames[0]['SVM Returns'] = frames[0]['SVM Signal'] * frames[0]['Returns'].shift(1)
+frames[0].iloc[-pred_len:,Signal_Column] = list(map(int,y_pred))
+frames[0]['SVM Returns'] = frames[0]['SVM Signal'] * frames[0]['Returns'].shift(1)
 
-# frames[0].iloc[-pred_len:,Return_Column] = np.nancumsum(frames[0]['SVM Returns'][-pred_len:])
-# frames[0].iloc[-pred_len:,Market_Column] = np.nancumsum(frames[0]['Returns'][-pred_len:])
+frames[0].iloc[-pred_len:,Return_Column] = np.nancumsum(frames[0]['SVM Returns'][-pred_len:])
+frames[0].iloc[-pred_len:,Market_Column] = np.nancumsum(frames[0]['Returns'][-pred_len:])
 
-# sharpe_ratio = (frames[0]['Total Strat Returns'][-1] - frames[0]['Market Returns'][-1])/ \
-#                     np.nanstd(frames[0]['Total Strat Returns'][-pred_len:])
+sharpe_ratio = (frames[0]['Total Strat Returns'][-1] - frames[0]['Market Returns'][-1])/ \
+                    np.nanstd(frames[0]['Total Strat Returns'][-pred_len:])
 
-# print(sharpe_ratio)
+print(sharpe_ratio)
 
-# fig, ax = plt.subplots(figsize=(9, 7))
+fig, ax = plt.subplots(figsize=(9, 7))
 
-# ax.plot(frames[0][-pred_len:].index.values,
-#         frames[0]['Total Strat Returns'][-pred_len:].values, color='g', label="Strat Returns")
+ax.plot(frames[0][-pred_len:].index.values,
+        frames[0]['Total Strat Returns'][-pred_len:].values, color='g', label="Strat Returns")
 
-# ax.plot(frames[0][-pred_len:].index.values,
-#         frames[0]['Market Returns'][-pred_len:].values, color='b', label="Market Returns")
+ax.plot(frames[0][-pred_len:].index.values,
+        frames[0]['Market Returns'][-pred_len:].values, color='b', label="Market Returns")
 
-# ax.set(xlabel= "Date",ylabel="Returns")
-# plt.title(i,fontsize=15)
-# ax.xaxis.set_major_locator(ticker.AutoLocator())
+ax.set(xlabel= "Date",ylabel="Returns")
+plt.title(i,fontsize=15)
+ax.xaxis.set_major_locator(ticker.AutoLocator())
 
-# plt.legend(loc='best')
-# plt.savefig("AAPL.png")
-# plt.show()
+plt.legend(loc='best')
+plt.savefig("AAPL.png")
+plt.show()
