@@ -18,7 +18,7 @@ def preprocess(ticker):
     """returns a pandas dataframe with technical indicators"""
 
     ## download dataset
-    df = yf.download(tickers=ticker, ) # start="2001-01-01"
+    df = yf.download(tickers=ticker,start="2001-01-01")
 
     ## Technical indicators
     df["High Shifted"] = df["High"].shift(1)
@@ -34,7 +34,7 @@ def preprocess(ticker):
     )
     df["Momentum"] = ta.MOM(df["Close Shifted"], timeperiod=12)
 
-    df["Gain Value"] = df["Open"] - df["Open"].shift(1)
+    df["Gain Value"] = df["Open"].shift(-1) - df["Open"]
     'used in simulation not in fitting the model'
 
     '''
@@ -45,9 +45,10 @@ def preprocess(ticker):
             (not yesterday's returns)
     '''
 
-    df["Returns"] = np.log(df["Open"].shift(-1) / df["Open"])
+    df["Returns"] = np.log(df["Open"].shift(-1) / df["Close"])
     df["Signal"] = df["Returns"].apply(lambda x: 1 if x > 0 else 0)
     df = df[40:]
+    df = df.dropna()
 
     return df
 
