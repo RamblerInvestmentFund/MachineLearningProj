@@ -23,13 +23,14 @@ the ones from 2019 etc cuz its not useful to trading
 def simulation(df, model):
     """simulate day trading and compare to a buy and hold strategy"""
 
-    # maybe min-max normalized is better ... ask anthony
+    ## normalizing the dataset
     normalized_df=(df-df.mean())/df.std()
-
     normalized_df["Signal"] = df["Signal"]
     normalized_df = normalized_df.drop(["High", "Low", "Close", "Adj Close", "Returns"], axis=1, inplace=False)
 
-    train, test = train_test_split(normalized_df, test_size=0.2)
+
+    ## splitting data
+    train, test = train_test_split(normalized_df, test_size=0.2,)
 
     X_train = np.array(train[train.columns[:-2]])
     y_train = np.array(train[train.columns[-1]])
@@ -37,24 +38,21 @@ def simulation(df, model):
     X_test = np.array(test[test.columns[:-2]])
     y_test = np.array(test[test.columns[-1]])
 
+    ## training model
     model.fit(X_train, y_train)
 
 
-    # predicting net value
+    ## predicting net value
     gain_value = list(df['Gain Value'])
     y_pred = list(model.predict(np.array(normalized_df[normalized_df.columns[:-2]])))
 
     y_pred = [1 if i==1 else -1 for i in y_pred]
-
-    # interpretting class labels ... might need a double check
-    gain1 = [val * action for val, action in zip(gain_value, y_pred)]
-    gain2 = [val * -action for val, action in zip(gain_value, y_pred)]
-
-    gains = gain1 if sum(gain1) > sum(gain2) else gain2
+    gains = [val * action for val, action in zip(gain_value, y_pred)]
 
     ## perfect guesser
     # gains = [abs(val) for val in gain_value]
 
+    ## returning cumulative_gains for graphing
     net = sum(gains)
 
     cumulative_gains = []

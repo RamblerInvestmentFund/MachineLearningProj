@@ -27,7 +27,7 @@ def model(df):
         ["High", "Low", "Close", "Adj Close", "Returns"], axis=1, inplace=False
     )
 
-    ## ???
+    ## making subsets of the data
     modern_predict = normalized_df.iloc[4864:]
     normalized_df = normalized_df.iloc[:-365]
     modern_predict_array = np.array(modern_predict[modern_predict.columns[:-2]])
@@ -84,9 +84,10 @@ def main():
     prints the average
     '''
 
+    # pull data
     df = data.preprocess("JPM")
 
-    ## what is year_df? ... everything but the first 4864 years of df?
+    ## year_df = most recent year
     year_df = df.iloc[4864:]
 
     values = []
