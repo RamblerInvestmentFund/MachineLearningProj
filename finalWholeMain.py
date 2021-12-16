@@ -43,7 +43,7 @@ for i in stocks:
     df['Macd'], df['Macd Signal'],df['Macd Hist'] = ta.MACD(df['Close Shifted'], fastperiod=12, slowperiod=26, signalperiod=9)
     df['Momentum'] = ta.MOM(df['Close Shifted'],timeperiod=12)
 
-    df['Returns'] = np.log(df['Open']/df['Open'].shift(1)) 
+    df['Returns'] = np.log(df['Open'] / df['Open'].shift(1)) 
     df['Signal'] = df.apply(signal, axis=1)
     df = df[40:]
     frames.append(df)
