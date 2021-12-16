@@ -3,7 +3,7 @@ This project attempts to predict the returns of stocks with respect to their pre
 
 ### Contributions and different Implementations
 - Anthony Peters -> contributed to the main.py whereby we use the final optimized SVM to predict and plot returns vs a buy and hold strategy
-- Matt Hyatt -> 
+- Matt Hyatt -> contributed to mHyatt/rnn.py and mHyatt/preprocessing.py which predict signals, contributed to mHyatt/svm.py and mHyatt/data.py which train an svm and produce a graphical distribution of accuracy, confusion matrix and trading simulation
 - Jacob Maffet -> contibuted to the folder jmaffett which holds an SVM implementation on the JPM ticker and graphs of returns and sharpe ratios
 - Thomas DiMonte -> contributed to __init__.py in percentReturn. Signalling additions and increasing percent return accuracy
 - Yandi Farinango -> Worked on an independent implementation of which he submitted seperately
