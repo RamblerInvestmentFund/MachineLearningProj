@@ -99,10 +99,15 @@ def main():
     "main analysis will occur here"
 
     # preprocess.save_npz()
-    try:
-        X, y = preprocess.load_npz()
-        SHAPE = X[0].shape
-    except:
+    print('download complete stock data? eta 5 min...')
+    if input('(y/n) ').lower() == 'y':
+        try:
+            preprocess.save_npz()
+            X, y = preprocess.load_npz()
+            SHAPE = X[0].shape
+        except:
+            X, y, SHAPE = preprocess.rnn_data_pipeline(["SPY"])
+    else:
         X, y, SHAPE = preprocess.rnn_data_pipeline(["SPY"])
 
     ## building model
