@@ -17,9 +17,9 @@ This project attempts to predict the returns of stocks with respect to their pre
 
 ### Architecture
 
-An SVM with a polynomial kernel is used.
+An SVM with a rbf kernel is used.
 
-`model = svm.SVC(kernel="poly")`
+`model = svm.SVC(kernel="rbf", C = 1000, gamma = 1)`
 
 ### Dataset
 
