@@ -1,6 +1,6 @@
 import data
 
-import rnn, svm
+import RNN.rnn as rnn, svm
 
 
 def main():

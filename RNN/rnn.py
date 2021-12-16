@@ -17,8 +17,8 @@ from tensorflow.keras.layers import (
 from tensorflow_addons.optimizers import CyclicalLearningRate
 from tensorflow.keras.optimizers import SGD, Adam
 
-import preprocess
-from preprocess import rnn_data_pipeline, snp
+import RNN.preprocess as preprocess
+from RNN.preprocess import rnn_data_pipeline, snp
 
 '''
 predict all features
