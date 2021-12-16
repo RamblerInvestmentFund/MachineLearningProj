@@ -1,6 +1,6 @@
-import data
+import mHyatt.data as data
 
-import RNN.rnn as rnn, svm
+import RNN.rnn as rnn, mHyatt.svm as svm
 
 
 def main():

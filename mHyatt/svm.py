@@ -5,7 +5,7 @@ from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 
-import data
+import mHyatt.data as data
 
 '''
 maybe it would be better for the model
