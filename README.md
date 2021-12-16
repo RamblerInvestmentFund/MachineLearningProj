@@ -24,7 +24,7 @@ An SVM with a rbf kernel is used.
 `model = svm.SVC(kernel="rbf", C = 1000, gamma = 1)`
 
 ### Dataset
-Various stock tickers are train the model one at a time.
+Various stock tickers train the model one at a time.
 
 # RNN
 ### Architecture
