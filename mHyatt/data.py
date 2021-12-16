@@ -37,15 +37,7 @@ def preprocess(ticker):
     df["Gain Value"] = df["Open"].shift(-1) - df["Open"]
     'used in simulation not in fitting the model'
 
-    '''
-        df["Returns"] = df["Open"] / df["Open"].shift(1)
-            predicts the past
-
-        we need to predict future returns with past data
-            (not yesterday's returns)
-    '''
-
-    df["Returns"] = np.log(df["Open"].shift(-1) / df["Close"])
+    df["Returns"] = np.log(df["Open"] / df["Close"].shift(1))
     df["Signal"] = df["Returns"].apply(lambda x: 1 if x > 0 else 0)
     df = df[40:]
     df = df.dropna()

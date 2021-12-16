@@ -107,7 +107,7 @@ def save_npz(stocks=snp(), name='snp500'):
 
     X,y,SHAPE = rnn_data_pipeline()
 
-    np.savez_compressed(f'datasets/{name}', X=X, y=y)
+    np.savez_compressed(f'{name}', X=X, y=y)
 
 
 def load_npz(name='snp500'):
@@ -146,7 +146,7 @@ def main():
         df = process(df)
 
         ## save to csv
-        df.to_csv(path_or_buf=f"./datasets/csv_{stock}.csv")
+        df.to_csv(path_or_buf=f"{stock}.csv")
 
 
 if __name__ == "__main__":

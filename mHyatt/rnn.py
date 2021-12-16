@@ -16,11 +16,14 @@ from tensorflow.keras.layers import (
 )
 from tensorflow_addons.optimizers import CyclicalLearningRate
 from tensorflow.keras.optimizers import SGD, Adam
+from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 
-import RNN.preprocess as preprocess
-from RNN.preprocess import rnn_data_pipeline, snp
+import preprocess
+from preprocess import rnn_data_pipeline, snp
 
-'''
+
+
+"""
 predict all features
 
 fontend = df...
@@ -34,48 +37,7 @@ for i in n_steps:
 
     frontend += [tomorrow]
     frontend.remove(0)
-'''
-
-
-def build_model(input=(54,), kind="RNN", nunits=64, nlayers=1, bidirectional=True):
-    """
-    borrowed from textbook
-    used to test many different types of RNNs
-    """
-
-    tf.random.set_seed(1)
-
-    # build the model
-    model = tf.keras.Sequential()
-
-    kind = kind.upper()  # prevents user error
-
-    # add recurrent layers
-    for i in range(nlayers):
-        sequences = i < nlayers - 1
-
-        if kind == "RNN":
-            layer = SimpleRNN(
-                units=nunits, return_sequences=sequences, name=f"rnn-layer{i}"
-            )
-        if kind == "LSTM":
-            layer = LSTM(
-                units=nunits, return_sequences=sequences, name=f"lstm-layer{i}"
-            )
-        if kind == "GRU":
-            layer = GRU(units=nunits, return_sequences=sequences, name=f"gru-layer{i}")
-
-        if bidirectional:
-            layer = Bidirectional(layer, name=f"bidir-{layer.name}")
-
-        model.add(layer)
-
-    # add dense layers
-    model.add(Dense(64, activation="relu"))
-    model.add(Dense(1, activation="sigmoid"))
-
-    model.summary()
-    return model
+"""
 
 
 def future(ndays: int):
@@ -122,23 +84,26 @@ def graph(hist):
     fig.savefig("results-rnn.png")
     fig.clf()
 
+def plot_confusion_matrix(y_test, y_pred):
+
+    ## init graph
+    fig = plt.figure()
+
+    cm = confusion_matrix(y_test, y_pred)
+    cm_display = ConfusionMatrixDisplay(cm).plot()
+    cm_display.plot(cmap=plt.cm.Blues)
+
+    plt.title(f"Confusion Matrix of RNN on S&P")
+    plt.savefig(f"confusion-matrix-rnn.png")
+    plt.clf()
 
 def main():
     "main analysis will occur here"
 
-    ## pulling data
-    # stocks = preprocess.snp()
-    # stocks = ['AAPL']
-    # X, y, SHAPE = preprocess.rnn_data_pipeline(stocks=stocks, timesteps=50)
-
     X, y = preprocess.load_npz()
     SHAPE = X[0].shape
 
-
     ## building model
-
-    # model = build_model(kind="RNN", nunits=64, nlayers=1, bidirectional=True)
-
     tf.random.set_seed(1)
 
     model = Sequential(
@@ -149,7 +114,7 @@ def main():
             LSTM(32, input_shape=SHAPE, return_sequences=True),
             Bidirectional(LSTM(32, return_sequences=True)),
             ## dense layers
-            Dense(16, activation="selu"),
+            Dense(64, activation="selu"),
             Dense(16, activation="selu"),
             ## output layer
             Dense(1, activation="softmax"),
@@ -167,7 +132,7 @@ def main():
 
     sgd = SGD(
         name="momentum-sgd",
-        learning_rate=0.01, # could be clr
+        learning_rate=0.01,  # could be clr
         momentum=0.4,
         nesterov=True,
         clipvalue=1.0,  # clipnorm...
@@ -186,6 +151,16 @@ def main():
         optimizer=adam, loss=tf.keras.losses.BinaryCrossentropy(), metrics=["accuracy"]
     )
 
+    ## validation data
+    val_split = 0.2
+    val_size = int(val_split*len(X))
+
+    val = (X[-val_size:],y[-val_size:])
+
+    X = X[:-val_size]
+    y = y[:-val_size]
+
+
     print(f"x shape: {X.shape}")
     print(f"y shape: {y.shape}")
 
@@ -199,13 +174,20 @@ def main():
         epochs=50,
         verbose=2,
         batch_size=SHAPE[0],
-        validation_split=0.2,
+        validation_data=val,
         callbacks=[earlystopping],
     )
     hist = hist.history
-    # no more than 86 epochs needed?
 
     graph(hist)
+
+    predictions = model.predict(val[0])
+    print(type(predictions))
+    print(predictions.shape)
+    confusion = tf.math.confusion_matrix(val[1], predictions)
+
+    print('confusion matrix')
+    print(confusion)
 
 
 if __name__ == "__main__":
