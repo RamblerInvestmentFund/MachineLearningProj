@@ -1,6 +1,13 @@
 # Predicting Market Value
 This project attempts to predict the returns of stocks with respect to their previous returns and various technical indicators.
 
+### Contributions and different Implementations
+- Anthony Peters -> contributed to the main.py whereby we use the final optimized SVM to predict and plot returns vs a buy and hold strategy
+- Matt Hyatt -> 
+- Jacob Maffet -> 
+- Thomas DiMonte -> 
+- Yandi Farinango -> Worked on an independent implementation of which he submitted seperately
+
 ### Requirements
 * run in a venv
     * `virtualenv .venv; deactivate &> /dev/null; source ./.venv/bin/activate;`
@@ -8,33 +15,19 @@ This project attempts to predict the returns of stocks with respect to their pre
     * `pip install -r requirements.txt`
 
 ### Model Selection
-
 - SVM
 - RNN
 
-
 # SVM
-
 ### Architecture
-
 An SVM with a rbf kernel is used.
-
 `model = svm.SVC(kernel="rbf", C = 1000, gamma = 1)`
 
 ### Dataset
-
 Various stock tickers are train the model one at a time.
 
-### Graphs
-
-![confusion](graphs/svm/SPY-confusion-matrix-svm.png)
-![accuracy](graphs/svm/SPY-accuracy-svm.png)
-![simulation](graphs/svm/SPY-simulation-svm.png)
-
 # RNN
-
 ### Architecture
-
 Model: "sequential"
 
 |    Layer (type)          |     Output Shape      |    Param    |
@@ -50,15 +43,6 @@ Model: "sequential"
 * Non-trainable params: 0
 
 ### Dataset
-Historical data was pulled from yahoo finance on 502 different stock tickers from the S&P 500
-
-* x shape: (55203, 50, 15)
-* y shape: (55203, 50, 1)
+Historical data was pulled from yahoo finance on 10+ different stock tickers from the S&P 500
 
 
-### RNN trained on returns AAPL (54% accuracy)
-![accuracy](graphs/rnn/results-rnn.png)
-
-### RNN trained on technical indicators SNP500 (57% accuracy)
-
-![accuracy](graphs/rnn/snp500.png)
