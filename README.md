@@ -5,7 +5,7 @@ This project attempts to predict the returns of stocks with respect to their pre
 - Anthony Peters -> contributed to the main.py whereby we use the final optimized SVM to predict and plot returns vs a buy and hold strategy
 - Matt Hyatt -> 
 - Jacob Maffet -> 
-- Thomas DiMonte -> 
+- Thomas DiMonte -> contributed to __init__.py in percentReturn. Signalling additions and increasing percent return accuracy
 - Yandi Farinango -> Worked on an independent implementation of which he submitted seperately
 
 ### Requirements
